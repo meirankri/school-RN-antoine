@@ -1,10 +1,11 @@
+/* eslint-disable react/prop-types */
 import React, { useContext } from 'react';
 import {
-  View, Text, FlatList, StyleSheet, Image,
+  View, FlatList, StyleSheet,
 } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SchoolContext } from '../store';
-import StudentDetail from './StudentDetail'
+import StudentDetail from './StudentDetail';
 
 const styles = StyleSheet.create({
   students_container: {
@@ -16,8 +17,8 @@ const styles = StyleSheet.create({
     padding: 10,
   },
 });
-function Students({navigation}) {
-  const [state, dispatch] = useContext(SchoolContext);
+function Students({ navigation }) {
+  const [state] = useContext(SchoolContext);
 
   return (
     <View style={styles.students_container}>
@@ -26,7 +27,7 @@ function Students({navigation}) {
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => navigation.navigate('DetailStudent', { id: item.id })}>
-             <StudentDetail item={item} />
+            <StudentDetail item={item} />
           </TouchableOpacity>
         )}
       />

@@ -1,20 +1,12 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable linebreak-style */
 import React from 'react';
 import {
-  Image, Text, View, StyleSheet,
+  Image, Text, View,
 } from 'react-native';
-import {average} from '../helpers/average'
+import average from '../helpers/average';
+import styles from '../src/style';
 
-const styles = StyleSheet.create({
-  students_container: {
-    flex: 1,
-    flexDirection: 'row',
-  },
-  student: {
-    margin: 20,
-    padding: 10,
-  },
-});
 
 const StudentDetail = ({ item }) => (
   <View
@@ -33,9 +25,12 @@ const StudentDetail = ({ item }) => (
       Nombre d'absence :
       {item.attendance}
     </Text>
-    <Text>Moyenne: {average(item.notes)}</Text>
+    <Text>
+      Moyenne:
+      {average(item.notes)}
+    </Text>
   </View>
-  
+
 );
 
 export default StudentDetail;

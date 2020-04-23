@@ -1,10 +1,9 @@
-import React, {useContext}from 'react';
-import { View, Text, Flatlist } from 'react-native';
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import Students from './components/Students'
-import Student from './components/Student'
-import { SchoolProvider , SchoolContext} from './store'
+import Students from './components/Students';
+import Student from './components/Student';
+import { SchoolProvider } from './store';
 
 
 const Stack = createStackNavigator();

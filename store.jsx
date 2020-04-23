@@ -1,3 +1,7 @@
+/* eslint-disable linebreak-style */
+/* eslint-disable react/prop-types */
+/* eslint-disable no-plusplus */
+
 import React, { useReducer, createContext } from 'react';
 
 const initialState = {
@@ -40,11 +44,12 @@ const reducer = (state, action) => {
 
   switch (action.type) {
     case 'INCREMENT':
-      // ici on modifie uniquement le student en lui augementent attendance 
+      // ici on modifie uniquement le student en lui augementent attendance
       student = { ...state.students.find((s) => s.id === action.id) };
       student.attendance++;
 
-      // avec map on retourne tout les element dans un nouveau tableau, en modifiant le student en question
+      // avec map on retourne tout les element dans un nouveau tableau,
+      // en modifiant le student en question
       students = state.students.map((s) => {
         if (s.id !== action.id) return s;
         return student;
@@ -56,8 +61,12 @@ const reducer = (state, action) => {
     case 'DECREMENT':
       student = { ...state.students.find((s) => s.id === action.id) };
       // eslint-disable-next-line no-plusplus
-      student.attendance--,
+      student.attendance--;
 
+      students = state.students.map((s) => {
+        if (s.id !== action.id) return s;
+        return student;
+      });
       students = state.students.map((s) => {
         if (s.id !== action.id) return s;
         return student;
@@ -73,14 +82,14 @@ const reducer = (state, action) => {
 
 // ici on crée un provider qui va contextualiser le state et le dispatch
 // dans touts les components en props children
-export const SchoolProvider = (props) => {
+export const SchoolProvider = ({ children }) => {
   // ici on recupere le state et le dispatch de l'use reducer
   const [state, dispatch] = useReducer(reducer, initialState);
 
   // le return qui prendre en props touts les components de l'app
   return (
     <SchoolContext.Provider value={[state, dispatch]}>
-      {props.children}
+      {children}
     </SchoolContext.Provider>
   );
 };
