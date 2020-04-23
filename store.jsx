@@ -3,6 +3,8 @@
 /* eslint-disable no-plusplus */
 
 import React, { useReducer, createContext } from 'react';
+import average from './helpers/average';
+import newArray from './helpers/newArray';
 
 const initialState = {
   students: [
@@ -38,9 +40,30 @@ const initialState = {
 // en params on lui met l'initial state
 export const SchoolContext = createContext(initialState);
 
+function compare(a, b, ascOrdDsc) {
+  // Use toUpperCase() to ignore character casing
+  const bandA = average(a.notes);
+  const bandB = average(b.notes);
+
+  let comparison = 0;
+  if (ascOrdDsc) {
+    if (bandA > bandB) {
+      comparison = 1;
+    } else if (bandA < bandB) {
+      comparison = -1;
+    }
+  } else if (bandA < bandB) {
+    comparison = 1;
+  } else if (bandA > bandB) {
+    comparison = -1;
+  }
+
+  return comparison;
+}
+
 // on creer le recuder qui va gerer la logique en fonction des action
 const reducer = (state, action) => {
-  let students; let student;
+  let students; let student; let ascOrdDsc; let behaviours;
 
   switch (action.type) {
     case 'INCREMENT':
@@ -73,6 +96,58 @@ const reducer = (state, action) => {
       });
       return {
         ...state, students,
+      };
+    case 'RESET_ABSENCE':
+      student = { ...state.students.find((s) => s.id === action.id) };
+      // eslint-disable-next-line no-plusplus
+      student.attendance = 0;
+
+      students = state.students.map((s) => {
+        if (s.id !== action.id) return s;
+        return student;
+      });
+      return {
+        ...state, students,
+      };
+    case 'RESET_ALL_ABSENCE':
+
+      students = state.students.map((newStudent) => {
+        const s = { ...newStudent };
+        s.attendance = 0;
+        return s;
+      });
+
+      return {
+        ...state, students,
+      };
+    case 'ORDER_ASC_DSC':
+      students = newArray([...state.students]);
+      if (state.order === false) ascOrdDsc = true;
+      else ascOrdDsc = false;
+
+      students.sort((a, b) => compare(a, b, ascOrdDsc));
+      return {
+        ...state, students, order: ascOrdDsc,
+      };
+    case 'HANDLE_SELECT':
+      behaviours = state.behaviours.map((newBehaviour) => {
+        const b = { ...newBehaviour };
+        return b;
+      });
+      if (behaviours.length !== 0) {
+        for (let i = 0; i < behaviours.length; i++) {
+          if (behaviours[i].id === action.id) {
+            behaviours[i].mention = action.mention;
+          } else {
+            behaviours.push({ id: action.id, mention: action.mention });
+          }
+        }
+      } else {
+        behaviours.push({ id: action.id, mention: action.mention });
+      }
+
+      return {
+        ...state, behaviours,
       };
 
     default:
