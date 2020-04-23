@@ -28,28 +28,42 @@ const initialState = {
 };
 // Copie l'objet initialState dans copyInitialState
 
-const copyInitialState = JSON.parse(JSON.stringify(initialState));
+// pour copier un object avec plusieurs objects à l'interieur c'est une astuce
+// const copyInitialState = JSON.parse(JSON.stringify(initialState));
 // ici on crée le context qui va diffuser notre reducer partout
 // en params on lui met l'initial state
-export const SchoolContext = createContext(copyInitialState);
+export const SchoolContext = createContext(initialState);
 
 // on creer le recuder qui va gerer la logique en fonction des action
 const reducer = (state, action) => {
+  let students; let student;
+
   switch (action.type) {
     case 'INCREMENT':
-      // eslint-disable-next-line no-plusplus
-      state.students.find((s) => s.id === action.id).attendance++;
+      // ici on modifie uniquement le student en lui augementent attendance 
+      student = { ...state.students.find((s) => s.id === action.id) };
+      student.attendance++;
+
+      // avec map on retourne tout les element dans un nouveau tableau, en modifiant le student en question
+      students = state.students.map((s) => {
+        if (s.id !== action.id) return s;
+        return student;
+      });
+      // on remplace students de l'initial state avec celui qu'on vient de créer
       return {
-        ...state,
+        ...state, students,
       };
     case 'DECREMENT':
+      student = { ...state.students.find((s) => s.id === action.id) };
+      // eslint-disable-next-line no-plusplus
+      student.attendance--,
 
-      if (state.students.find((s) => s.id === action.id).attendance > 0) {
-        // eslint-disable-next-line no-plusplus
-        state.students.find((s) => s.id === action.id).attendance--;
-      }
+      students = state.students.map((s) => {
+        if (s.id !== action.id) return s;
+        return student;
+      });
       return {
-        ...state,
+        ...state, students,
       };
 
     default:
@@ -61,7 +75,7 @@ const reducer = (state, action) => {
 // dans touts les components en props children
 export const SchoolProvider = (props) => {
   // ici on recupere le state et le dispatch de l'use reducer
-  const [state, dispatch] = useReducer(reducer, copyInitialState);
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   // le return qui prendre en props touts les components de l'app
   return (
